@@ -1,4 +1,5 @@
 var redisCollection = new Meteor.RedisCollection("redis");
+var SERVICE_ROOT = 'x.binwu.me/';
 
 Router.route('/:_emoji', function() {
   var long_url = redisCollection.get('Emoji:url:' + this.params._emoji) || '/';
@@ -34,7 +35,7 @@ if (Meteor.isClient) {
 
     var cached = redisCollection.get('Emoji:url:' + url);
     if (cached) {
-        long_url.value = cached;
+        long_url.value = SERVICE_ROOT + cached;
     } else {
         redisCollection.incr('Emoji:total_cnt', function(err, res) {
             if (err) {
@@ -47,7 +48,7 @@ if (Meteor.isClient) {
                     } else {
                         redisCollection.set('Emoji:url:' + encoded, url, function(err, res){
                             if (!err) {
-                                long_url.value = encoded;
+                                long_url.value = SERVICE_ROOT + encoded;
                             }
                         });
                     }
